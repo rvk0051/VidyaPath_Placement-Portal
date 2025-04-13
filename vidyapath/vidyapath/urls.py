@@ -18,14 +18,13 @@ from django.contrib import admin
 from django.urls import path,include
 #from vidyapath_project.views import *
 from . import views
-from .views import notice
-from .views import login, home  
+# from .views import notice
+# from .views import login, home  
 from django.contrib.auth.views import LoginView
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import placement_stats, get_chart_data, get_salary_distribution, get_top_achievers ,admin_entry,delete_student,delete_company ,get_students,students_view, get_companies, add_company, add_student
-
-
+# from vidyapath_project import views
 
 
 urlpatterns = [
@@ -86,6 +85,8 @@ urlpatterns = [
 
 
     path('dashboard/', views.student_dashboard, name='student_dashboard'),
+    path('dashboard/upload/', views.upload_resume, name="upload_resume"),
+    path('dashboard/edit/<int:resume_id>/', views.edit_resume, name="edit_resume"),
     path('download/<int:resume_id>/', views.download_resume, name='download_resume'),
     path('delete/<int:resume_id>/', views.delete_resume, name='delete_resume'),
 

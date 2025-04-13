@@ -1,14 +1,15 @@
-from django.shortcuts import render, redirect
-from vidyapath_project.models import Registration
+from django.shortcuts import render, redirect, get_object_or_404
+from vidyapath_project.models import Registration, Resume
 from vidyapath_project.models import Notice
 from vidyapath_project.models import Login
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth import authenticate, login, logout  # ✅ This is the correct import
+from django.contrib.auth import authenticate, login, logout 
 from django.core.files.storage import FileSystemStorage
-
+from django.contrib.auth.decorators import login_required
+from vidyapath.forms import ResumeUploadForm
 
 #from django.contrib.auth.models import User
 #from django.contrib.auth import get_user_model
@@ -21,9 +22,8 @@ def home(request):
 def register(request):
     return render(request, 'register.html')
 
-
 def contact(request):
-    return render(request,'contact.html')
+    return render(request, 'contact.html')
 
 def aboutus(request):
     return render(request,'aboutus.html')
@@ -257,15 +257,12 @@ def learningdev(request):
 
 def placementg(request):
     return render(request, 'placementg.html')
-
-
-    
-    
     
 from django.contrib.auth import logout
 from django.shortcuts import redirect   
 def signout(request):
     logout(request)
+    list(messages.get_messages(request))
     response = redirect('home')
     response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     response['Pragma'] = 'no-cache'
@@ -622,53 +619,53 @@ from .forms import ResumeUploadForm
 import os
 from django.conf import settings
 
-@login_required
-def student_dashboard(request):
-    user = request.user
-    student = get_object_or_404(Registration, smartCardId=user.username)  # Assuming smartCardId == username
+# @login_required
+# def student_dashboard(request):
+#     user = request.user
+#     student = get_object_or_404(Registration, smartCardId=user.username)  # Assuming smartCardId == username
 
-    resumes = Resume.objects.filter(student=student).order_by('-uploaded_at')
-    form = ResumeUploadForm()
+#     resumes = Resume.objects.filter(student=student).order_by('-uploaded_at')
+#     form = ResumeUploadForm()
 
-    if request.method == 'POST':
-        if 'upload_resume' in request.POST:
-            form = ResumeUploadForm(request.POST, request.FILES)
-            if form.is_valid():
-                if resumes.count() >= 5:
-                    oldest_resume = resumes.last()
-                    if oldest_resume:
-                        oldest_resume.pdf.delete()
-                        oldest_resume.delete()
+#     if request.method == 'POST':
+#         if 'upload_resume' in request.POST:
+#             form = ResumeUploadForm(request.POST, request.FILES)
+#             if form.is_valid():
+#                 if resumes.count() >= 5:
+#                     oldest_resume = resumes.last()
+#                     if oldest_resume:
+#                         oldest_resume.pdf.delete()
+#                         oldest_resume.delete()
 
-                new_resume = form.save(commit=False)
-                new_resume.student = student
-                new_resume.save()
-                messages.success(request, "Resume uploaded successfully.")
-                return redirect('student_dashboard')
+#                 new_resume = form.save(commit=False)
+#                 new_resume.student = student
+#                 new_resume.save()
+#                 messages.success(request, "Resume uploaded successfully.")
+#                 return redirect('student_dashboard')
 
-        elif 'delete_resume' in request.POST:
-            resume_id = request.POST.get('resume_id')
-            resume = get_object_or_404(Resume, id=resume_id, student=student)
-            resume.pdf.delete()
-            resume.delete()
-            messages.success(request, "Resume deleted successfully.")
-            return redirect('student_dashboard')
+#         elif 'delete_resume' in request.POST:
+#             resume_id = request.POST.get('resume_id')
+#             resume = get_object_or_404(Resume, id=resume_id, student=student)
+#             resume.pdf.delete()
+#             resume.delete()
+#             messages.success(request, "Resume deleted successfully.")
+#             return redirect('student_dashboard')
 
-        elif 'edit_resume' in request.POST:
-            resume_id = request.POST.get('resume_id')
-            resume = get_object_or_404(Resume, id=resume_id, student=student)
-            form = ResumeUploadForm(request.POST, request.FILES, instance=resume)
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Resume updated successfully.")
-                return redirect('student_dashboard')
+#         elif 'edit_resume' in request.POST:
+#             resume_id = request.POST.get('resume_id')
+#             resume = get_object_or_404(Resume, id=resume_id, student=student)
+#             form = ResumeUploadForm(request.POST, request.FILES, instance=resume)
+#             if form.is_valid():
+#                 form.save()
+#                 messages.success(request, "Resume updated successfully.")
+#                 return redirect('student_dashboard')
 
-    context = {
-        'form': form,
-        'resumes': resumes,
-        'student': student,
-    }
-    return render(request, 'student_dashboard.html', context)
+#     context = {
+#         'form': form,
+#         'resumes': resumes,
+#         'student': student,
+#     }
+#     return render(request, 'student_dashboard.html', context)
 
 @login_required
 def download_resume(request, resume_id):
@@ -684,9 +681,122 @@ from django.shortcuts import get_object_or_404, redirect
 from vidyapath_project.models import Resume  # Make sure Resume model is imported
 from django.contrib.auth.decorators import login_required
 
-@login_required
+# @login_required
+# def delete_resume(request, resume_id):
+#     resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+#     resume.file.delete()  # Deletes the file from media folder
+#     resume.delete()       # Deletes the object from DB
+#     return redirect('student_dashboard')  # Redirect to your dashboard view
+
+
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
+from vidyapath_project.models import Registration, Resume
+from vidyapath.forms import ResumeUploadForm
+
+@login_required(login_url='signin')
+def student_dashboard(request):
+    """
+    Render a dashboard that lists up to 5 resumes for the logged-in student.
+    If there are more than 5 resumes, delete the oldest until only 5 remain.
+    """
+    try:
+        # Assume user email is unique and used during registration
+        registration = Registration.objects.get(email=request.user.email)
+    except Registration.DoesNotExist:
+        messages.error(request, "Your registration details were not found.")
+        return redirect("home")
+    
+    # Get all resumes for this student, ordering by uploaded_at (oldest last)
+    resumes = registration.resumes.all().order_by("-uploaded_at")
+    
+    # Ensure only 5 resumes exist in the database (auto-delete the oldest ones)
+    if resumes.count() > 5:
+        excess_count = resumes.count() - 5
+        # Order ascending (oldest first) and delete the extra ones
+        for resume in resumes.order_by("uploaded_at")[:excess_count]:
+            resume.delete()
+        # Refresh the queryset
+        resumes = registration.resumes.all().order_by("-uploaded_at")
+    
+    context = {
+        "registration": registration,
+        "resumes": resumes
+    }
+    return render(request, "student_dashboard.html", context)
+
+
+@login_required(login_url='signin')
+def upload_resume(request):
+    """
+    Allow a student to upload a new resume.
+    If they already have 5 resumes, delete the oldest one.
+    """
+    try:
+        registration = Registration.objects.get(email=request.user.email)
+    except Registration.DoesNotExist:
+        messages.error(request, "Registration details not found.")
+        return redirect("student_dashboard")
+    
+    if request.method == "POST":
+        form = ResumeUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Delete the oldest resume if count is already 5
+            existing_resumes = registration.resumes.all().order_by("uploaded_at")
+            if existing_resumes.count() >= 5:
+                oldest_resume = existing_resumes.first()
+                oldest_resume.delete()
+            
+            new_resume = form.save(commit=False)
+            new_resume.student = registration
+            new_resume.save()
+            messages.success(request, "Resume uploaded successfully!")
+            return redirect("student_dashboard")
+        else:
+            messages.error(request, "There was an error in your submission. Please try again.")
+    else:
+        form = ResumeUploadForm()
+    
+    return render(request, "upload_resume.html", {"form": form})
+
+
+@login_required(login_url='signin')
+def edit_resume(request, resume_id):
+    """
+    Allow a student to edit an existing resume.
+    """
+    try:
+        registration = Registration.objects.get(email=request.user.email)
+        resume_instance = registration.resumes.get(id=resume_id)
+    except Resume.DoesNotExist:
+        messages.error(request, "Resume not found.")
+        return redirect("student_dashboard")
+    
+    if request.method == "POST":
+        form = ResumeUploadForm(request.POST, request.FILES, instance=resume_instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Resume updated successfully!")
+            return redirect("student_dashboard")
+        else:
+            messages.error(request, "Form errors occurred. Please try again.")
+    else:
+        form = ResumeUploadForm(instance=resume_instance)
+    
+    return render(request, "edit_resume.html", {"form": form, "resume": resume_instance})
+
+
+@login_required(login_url='signin')
 def delete_resume(request, resume_id):
-    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
-    resume.file.delete()  # Deletes the file from media folder
-    resume.delete()       # Deletes the object from DB
-    return redirect('student_dashboard')  # Redirect to your dashboard view
+    """
+    Allow a student to delete one of their resumes.
+    """
+    try:
+        registration = Registration.objects.get(email=request.user.email)
+        resume = registration.resumes.get(id=resume_id)
+        resume.delete()
+        messages.success(request, "Resume deleted successfully.")
+    except Resume.DoesNotExist:
+        messages.error(request, "Resume not found.")
+    return redirect("student_dashboard")
