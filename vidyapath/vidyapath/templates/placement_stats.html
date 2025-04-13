@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Placement Statistics</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="{% static 'placement_stats.css' %}">
+    <link rel="stylesheet" href="{% static 'footerheader.css' %}">
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- AOS (Animate on Scroll) Library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+</head>
+<body>
+    <header class="header">
+            <div class="container">
+                <div class="logo">
+                    <img src="https://i.ibb.co/vh6n771/logo.png" alt="College Logo">
+                </div>
+                <nav class="navbar">
+                    <ul class="nav-links">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'aboutus' %}">About Us</a></li>
+                        <li class="dropdown-parent">
+                            <a href="#top-placements">Top Placements</a>
+                            <ul class="dropdown">
+                                <li><a href="{% url 'placement' %}">Placement Data</a></li>
+                                <li><a href="{% url 'placement_stats' %}">Placement Statistics</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-parent">
+                            <a href="#companies">Companies</a>
+                            <ul class="dropdown">
+                                <li><a href="#">Our Partners</a></li>
+                                <li><a href="{% url 'learningdev' %}">Learning and Development</a></li>
+                                <li><a href="{% url 'placementg' %}">Placement Guidelines</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                        <li class="profile-dropdown">
+                            {% if request.user.is_authenticated %}
+                              <button class="profile-btn" onclick="toggleDropdown()">
+                                <i class="fas fa-user-circle"></i>
+                                <span>{{ request.user.username }}</span>
+                                <i class="fas fa-chevron-down"></i>
+                              </button>
+                              <ul class="dropdown-menu" id="profileDropdown">
+                                <li><a href="{% url 'dashboard' %}">👤 Profile</a></li>
+                                <li><a href="{% url 'signout' %}">🚪 Logout</a></li>
+                              </ul>
+                            {% endif %}
+                          </li>
+                    </ul>
+                    <div class="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                </nav>
+            </div>
+    </header>
+    <section id="topAchieversSection">
+        <h2 class="text-center">🏆 Year-wise Top Achievers</h2>
+        <div class="carousel-container">
+            
+                <div class="carousel-inner">
+                    <!-- Images will be inserted here by JavaScript -->
+                </div>
+        </div>
+    </section>
+
+    <section class="statistics-container">
+        <div class="chart-container" data-aos="fade-up">
+            <h2>🏢 Company-wise Placements</h2>
+            <section class="filters">
+                <label for="companyFilter">Select Company:</label>
+                <select id="companyFilter">
+                    <!-- Company options will be added dynamically -->
+                </select>
+                <label for="branchFilter">Select Branch:</label>
+                <select id="branchFilter">
+                    <!-- Branch options will be added dynamically -->
+                </select>
+                <button id="applyFilterButton" onclick="applyFilter()">Apply Filters</button>
+                <!-- Added input box to display selected company -->
+            </section>
+            
+            <canvas id="companyPlacementsChart"></canvas>
+        </div>
+        <div class="chart-container" data-aos="fade-up">
+            <h2>💰 Salary Distribution</h2>
+            <section class="salary-filters">
+                <label for="salaryBranchFilter">Select Branch:</label>
+                <select id="salaryBranchFilter">
+                    <option value="">All</option> <!-- Default option -->
+                </select>
+        
+                <label for="salaryYearFilter">Select Year:</label>
+                <select id="salaryYearFilter">
+                    <option value="">All</option> <!-- Default option -->
+                </select>
+        
+                <button id="applySalaryFilterButton" onclick="applySalaryFilter()">Apply Filters</button>
+            </section>
+        
+            
+            <p id="totalPlacedStudentsDisplay" style="font-weight: bold; margin-bottom: 6px; color: #333;"></p>
+            <canvas id="salaryChart"></canvas>
+        </div>    
+    </section>
+
+    <!-- Link JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="{% static 'js/placement_stats.js' %}"></script>
+
+    <script>
+        // Initialize AOS animations
+        AOS.init();
+    </script>
+    <section class="footer-section">
+        <div class="footer-container">
+            <!-- Contact Information -->
+            <div class="footer-contact">
+                <h3>BANASTHALI VIDYAPITH PLACEMENT CENTRE</h3>
+                <p>Vanasthali Rd, Aliyabad</p>
+                <p>Radha Kishnpura,Jaipur</p>
+                <p>Rajasthan ,PinCode 304022</p>
+                <p><i class="fas fa-phone"></i> Phone No:- 01438 – 228524
+
+                    FAX No:- 01438-228365</p>
+                <p><i class="fas fa-envelope"></i> <a href="#">placement@banasthali.in</a></p>
+            </div>
+    
+            <!-- Quick Links -->
+            <div class="footer-links">
+                <h3>QUICK LINKS</h3>
+                <ul>
+                    <li><a href="#">About BV</a></li>
+                    <li><a href="#">Placement Guidelines</a></li>
+                    <li><a href="#">Opportunities for Alumni</a></li>
+                    <li><a href="#">Photo Gallery</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+    
+            <!-- Social Links -->
+            <div class="footer-social">
+                <h3>FOLLOW US</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© Copyright 2022 AKCDS | Visitor Counter: <span id="visitor-counter">0016513</span></p>
+        </div>
+    </section>
+</body>
+</html>
+
+
+<script>
+    window.onload = function () {
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    };
+
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            window.location.href = "/signin/";  // ✅ Redirect to login page if user presses back button
+        }
+    });
+</script>

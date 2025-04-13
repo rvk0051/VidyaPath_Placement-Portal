@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    
+    animation: fadeIn 1s ease-in;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/*.header {
+    background: #007bff;
+    color: white;
+    padding: 15px 20px;
+    font-size: 24px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    animation: slideDown 1s ease-in-out;
+}
+*/
+/* Slide-down animation */
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Main container to hold both charts side by side */
+.statistics-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    flex-direction:flex-start;
+    gap: 10px;
+    padding: 10px;
+    max-width: 1200px; /* Increased to allow both charts */
+    margin: auto;
+}
+
+/* Each chart container */
+.chart-container,.schart-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    width: 48%;  /* Ensures charts sit side by side */
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+    min-height: 450px; /* Increased height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.chart-container:hover, .schart-container:hover {
+    transform: scale(1.03);
+}
+
+/* Ensuring both charts look consistent */
+canvas {
+    max-width: 100%;
+    height: 400px !important; /* Increased to fix small chart issue */
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.filters label {
+    font-weight: bold;
+}
+
+.filters select {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#applyFilterButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#applyFilterButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .statistics-container {
+        flex-direction: column;
+        align-items: center;
+       
+    }
+    .chart-container, .schart-container {
+        width: 90%;
+    }
+    
+}
+.salary-filters {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.salary-filters label {
+    font-weight: bold;
+}
+
+.salary-filters select {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#applySalaryFilterButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#applySalaryFilterButton:hover {
+    background-color: #0056b3;
+}
+
+/* Mobile Responsiveness */
+
+/* Carousel Container */
+.carousel-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px;
+    gap: 10px; /* More spacing between items */
+    width: 100%;
+    justify-content: center;
+}
+
+/* Carousel Items (Equal Width) */
+.carousel-item {
+    display: inline-block;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    width: 30%; /* Each achiever takes ~30% of screen */
+    max-width: 250px; /* Prevent overly large items */
+}
+
+/* Achiever Image (Increased Size) */
+.achiever-img {
+    display: block;
+    margin: 10px auto;
+    object-fit: cover; /* Crop instead of stretching */
+    width: 135px; /* Increased from 60px */
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+}
+
+/* Responsive - Adjust for Mobile */
+@media (max-width: 768px) {
+    .carousel-item {
+        width: 45%; /* Each item takes more space on mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-item {
+        width: 80%; /* Almost full width on small screens */
+    }
+}
+#topAchieversSection h2 {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 76px;
+    margin-bottom: 24px;
+    padding: 10px;
+}

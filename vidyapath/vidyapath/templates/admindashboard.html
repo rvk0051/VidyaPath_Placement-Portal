@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <!--{% if user.is_authenticated %}
+    <script>
+        window.location.href = "{% url 'admindashboard' %}";
+    </script>
+{% endif %}-->
+    
+    <style>
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif; /* Use a clean, professional font */
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+            background-image: url('https://i.ibb.co/jJpygVW/dashboard.webp'); /* Add a background image */
+            background-size: cover; /* Ensure the image covers the entire background */
+            background-position: center; /* Center the background image */
+            background-attachment: fixed; /* Keep the background fixed during scrolling */
+        }
+
+        /* Styling for the navigation bar */
+        nav {
+            background-color: rgba(0, 123, 255, 0.742); /* Blue background with slight transparency */
+            display: flex; /* Flexbox layout for alignment */
+            justify-content: space-between; /* Space out logo and menu items */
+            align-items: center; /* Vertically align items */
+            padding: 10px 20px; /* Add padding for spacing */
+        }
+
+        /* Logo styles */
+        nav .logo {
+            color: white; /* White text for contrast */
+            font-size: 20px; /* Slightly larger font size */
+            font-weight: bold; /* Make it bold for emphasis */
+            text-decoration: none; /* Remove underline */
+        }
+
+        /* Menu styles */
+        nav ul {
+            list-style: none; /* Remove default list styles */
+            margin: 0; /* Reset margin */
+            padding: 0; /* Reset padding */
+            display: flex; /* Horizontal alignment of menu items */
+        }
+
+        /* Individual menu item styles */
+        nav ul li {
+            position: relative; /* Allow dropdown positioning */
+        }
+
+        /* Anchor tag styles for menu items */
+        nav ul li a {
+            color: white; /* White text */
+            text-decoration: none; /* Remove underline */
+            padding: 10px 15px; /* Add padding for clickable area */
+            display: block; /* Ensure block-level behavior */
+        }
+
+        /* Hover effect for menu items */
+        nav ul li:hover a {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        /* Dropdown menu styles */
+        nav ul li ul {
+            position: absolute; /* Position dropdown relative to parent */
+            top: 100%; /* Align below the parent item */
+            left: 0; /* Align to the left of the parent item */
+            background-color: rgba(0, 123, 255, 0.9); /* Same background color as navbar with transparency */
+            display: none; /* Hidden by default */
+            min-width: 150px; /* Minimum width for dropdown */
+        }
+
+        /* Show dropdown on hover */
+        nav ul li:hover ul {
+            display: block; /* Display dropdown */
+        }
+
+        /* Styles for dropdown menu items */
+        nav ul li ul li {
+            width: 100%; /* Ensure full width */
+        }
+
+        /* Anchor tag styles for dropdown menu items */
+        nav ul li ul li a {
+            padding: 10px; /* Add padding for clickable area */
+        }
+
+        /* Main content area styling */
+        .content {
+            padding: 20px; /* Add padding around content */
+            color: white; /* Make text visible against the background */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Add text shadow for readability */
+        }
+
+        /* Responsive styles for smaller screens */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column; /* Stack menu items vertically */
+            }
+
+            nav ul li {
+                width: 100%; /* Full width for menu items */
+            }
+
+            nav ul li ul {
+                position: static; /* Default static positioning for dropdowns */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar with main sections and dropdowns -->
+    <nav>
+        <a href="#" class="logo">Admin Panel</a>
+        <ul>
+            <li><a href="#">Dashboard</a></li>
+            <li>
+                <a href="{% url 'notice' %}">Notices</a>
+                
+            </li>
+            
+            <li>
+                <a href="{% url 'admin_entry' %}">Placement Data </a>
+                <!--<ul>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                </ul>-->
+            </li>
+            <li>
+                <a href="{% url 'resume_list' %}">Resume</a>  </li>
+            </li>
+            
+            <li>
+                <a href="/signout/">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main content area -->
+    <div class="content">
+        <h1>Welcome to the Admin Panel</h1>
+        <p>Select an option from the menu to get started.</p>
+        
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Batch</th>
+                <th>Username</th>
+                <th>Smart Card ID</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+            {% for student in all %}
+            <tr>
+                <td>{{ student.id }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.batch }}</td>
+                <td>{{ student.username }}</td>
+                <td>{{ student.smartCardId }}</td>
+                <td>{{ student.email }}</td>
+                <td><a href="delete/{{student.id}}"><button id="del">DELETE</button></a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+    </div>
+</body>
+</html>
+<script>
+    window.onload = function () {
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    };
+
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            window.location.href = "/adminlogin/";  // ✅ Redirect to login page if user presses back button
+        }
+    });
+</script>

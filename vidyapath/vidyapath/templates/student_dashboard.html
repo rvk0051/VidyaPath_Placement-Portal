@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="{% static 'style_dashboard.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #e3f2fd;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .dashboard {
+            max-width: 1000px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 40px;
+            margin-top: 40px;
+        }
+        h1 {
+            text-align: center;
+            color: #0d47a1;
+        }
+        .resume-list {
+            margin-top: 30px;
+        }
+        .resume {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e3f2fd;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .resume a {
+            text-decoration: none;
+            color: #0d47a1;
+            font-weight: bold;
+        }
+        .resume button {
+            padding: 8px 12px;
+            background: #0d47a1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        form.upload-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .upload-btn {
+            background: #0d47a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .graphic-img {
+            display: block;
+            margin: 30px auto;
+            width: 60%;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Welcome to Your Resume Dashboard</h1>
+
+        <img src="{% static 'images/i1.png' %}" alt="Dashboard Graphic" class="graphic-img">
+
+        <!-- ✅ Flash messages -->
+        {% if messages %}
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            {% for message in messages %}
+            <div class="toast align-items-center text-white bg-{{ message.tags }} border-0 show" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">{{ message }}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="resume-list">
+            {% for resume in resumes %}
+            <div class="resume">
+                <a href="{{ resume.pdf.url }}" download>{{ resume.pdf.name|slice:"10:" }}</a>
+                <span>
+                    <a href="{{ resume.pdf.url }}" target="_blank">
+                        <button type="button">View</button>
+                    </a>
+
+                    <!-- Delete form -->
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="resume_id" value="{{ resume.id }}">
+                        <button type="submit" name="delete_resume">Delete</button>
+                    </form>
+
+                    <!-- Edit form -->
+                    <form method="POST" enctype="multipart/form-data" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="resume_id" value="{{ resume.id }}">
+                        <input type="file" name="pdf" accept=".pdf" required>
+                        <button type="submit" name="edit_resume">Edit</button>
+                    </form>
+                </span>
+            </div>
+            {% empty %}
+            <p>No resumes uploaded yet.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Upload new resume -->
+        <form method="POST" enctype="multipart/form-data" class="upload-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" name="upload_resume" class="upload-btn">Upload New Resume</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS for Toasts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Automatically show all toasts
+        document.querySelectorAll('.toast').forEach(toast => new bootstrap.Toast(toast).show());
+    </script>
+</body>
+</html>

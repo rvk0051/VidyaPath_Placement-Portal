@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Placement Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+        body { background-color: #f5f5f5; }
+        .contact-header { text-align: center; padding: 50px 0; background: url('{% static "images/banner.jpg" %}') no-repeat center center/cover; }
+        .contact-header h1 { color: white; font-size: 3rem; text-transform: uppercase; }
+        
+        .team-section { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 40px; }
+        .team-card { background: white; padding: 20px; text-align: center; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .team-card:hover { transform: scale(1.05); }
+        .team-card img { width: 150px; height: 150px; border-radius: 50%; }
+        .team-card h3 { margin-top: 10px; color: #333; }
+        .team-card p { color: #666; }
+        
+        .contact-table { width: 80%; margin: auto; border-collapse: collapse; }
+        .contact-table th, .contact-table td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+        .contact-table th { background: #007bff; color: white; }
+        
+        .footer-section { background: #333; color: white; padding: 20px; text-align: center; }
+
+        .team-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive 2-column layout */
+            gap: 40px;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        /* Contact Us heading with transition */
+        .contact-header h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            color: blue; /* Default blue color */
+            transition: all 0.5s ease-in-out; /* Smooth transition */
+        }
+        
+        /* Hover effect with gradient */
+        .contact-header h1:hover {
+            background: linear-gradient(45deg, #ff6b6b, #ffa502); /* Gradient effect */
+           /* -webkit-background-clip: text;*/
+            color: transparent;
+        }
+        
+        .contact-header h1:hover {
+            color:rgb(47, 82, 235); /* Color change on hover */
+        }
+        
+        /* Arranging images in alternate left-right format */
+        .team-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px;
+        }
+        
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 80%;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease-in-out forwards;
+        }
+        
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        
+        .team-member img:hover {
+            transform: scale(1.1); /* Zoom effect */
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .team-member:nth-child(odd) {
+            flex-direction: row;
+        }
+        
+        .team-member:nth-child(even) {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+        
+        /* Animation effect */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Add space after the table */
+        .contact-table {
+            width: 80%;
+            margin: 50px auto;
+            border-collapse: collapse;
+            margin-bottom: 80px; /* Space before footer */
+        }
+
+        .map-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            margin-bottom: 50px; /* Adds space before the footer */
+        }
+        iframe {
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <!-- {#}  Keep your existing header -->
+         <!-- Header Section -->
+    <header class="header">
+        
+        <div class="container">
+            <div class="logo">
+                <img src="https://i.ibb.co/vh6n771/logo.png" alt="College Logo">
+            </div>
+            <nav class="navbar">
+                <ul class="nav-links">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'aboutus' %}">About Us</a></li>
+                    <li class="dropdown-parent">
+                        <a href="#top-placements">Top Placements</a>
+                        <ul class="dropdown">
+                            <li><a href="{% url 'placement' %}">Placement Data</a></li>
+                            <li><a href="{% url 'placement_stats' %}">Placement Statistics</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-parent">
+                        <a href="#companies">Companies</a>
+                        <ul class="dropdown">
+                            <li><a href="partner.html">Our Partners</a></li>
+                            <li><a href="{% url 'learningdev' %}">Learning and Development</a></li>
+                            <li><a href="{% url 'placementg' %}">Placement Guidelines</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                    <li class="profile-dropdown">
+                        {% if request.user.is_authenticated %}
+                          <button class="profile-btn" onclick="toggleDropdown()">
+                            <i class="fas fa-user-circle"></i>
+                            <span>{{ request.user.username }}</span>
+                            <i class="fas fa-chevron-down"></i>
+                          </button>
+                          <ul class="dropdown-menu" id="profileDropdown">
+                            <li><a href="{% url 'dashboard' %}">👤 Profile</a></li>
+                            <li><a href="{% url 'signout' %}">🚪 Logout</a></li>
+                          </ul>
+                        {% endif %}
+                      </li>
+                      
+                </ul>
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+
+
+    <div class="contact-header">
+        <h1>Contact Us</h1>
+    </div>
+
+    <section class="team-section">
+        <div class="team-member">
+            <img src="{% static 'images/contact1.png' %}" alt="Dr. Anjani Kumar">
+            <div>
+                <h3>Prof. Chandra kumar Jha</h3>
+                <p> Dean faculty of Mathematics and Computing</p>
+            </div>
+        </div>
+        <div class="team-member">
+            <img src="{% static 'images/contact1.png' %}" alt="Mr. Amit Pamnani">
+            <div>
+                <h3>Dr. Rajiv Singh</h3>
+                <p>Head of Department</p>
+            </div>
+        </div>
+        <div class="team-member">
+            <img src="{% static 'images/contact1.png' %}" alt="Mr. Anupam Singh">
+            <div>
+                <h3>Mrs. Surekha Dwivedi
+                </h3>
+                <p>Placement Officer</p>
+            </div>
+        </div>
+        <div class="team-member">
+            <img src="{% static 'images/contact1.png' %}" alt="Mr. Anil Kumar Sharma">
+            <div>
+                <h3>Mrs. Avneet Kaur</h3>
+                <p>Placement Officer</p>
+            </div>
+        </div>
+    </section>
+
+    <table class="contact-table">
+        <tr>
+            <th>Query / Purpose</th>
+            <th>Email</th>
+        </tr>
+        <tr>
+            <td>Campus Placements</td>
+            <td>placement@banasthali.in</td>
+        </tr>
+       
+    </table>
+
+    <div class="map-container">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3582.4810090289417!2d75.86957687548782!3d26.40143217700192!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db5ff40d78d3b%3A0xdbc5f62c2b105dd4!2sBanasthali%20Vidyapith!5e0!3m2!1sen!2sin!4v1711377234567!5m2!1sen!2sin" 
+            width="100%" 
+            height="450" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+    
+
+    <section class="footer-section">
+        <div class="footer-container">
+            <!-- Contact Information -->
+            <div class="footer-contact">
+                <h3>BANASTHALI VIDYAPITH PLACEMENT CENTRE</h3>
+                <p>Vanasthali Rd, Aliyabad</p>
+                <p>Radha Kishnpura,Jaipur</p>
+                <p>Rajasthan ,PinCode 304022</p>
+                <p><i class="fas fa-phone"></i> Phone No:- 01438 – 228524
+
+                    FAX No:- 01438-228365</p>
+                <p><i class="fas fa-envelope"></i> <a href="#">placement@banasthali.in</a></p>
+            </div>
+    
+            <!-- Quick Links -->
+            <div class="footer-links">
+                <h3>QUICK LINKS</h3>
+                <ul>
+                    <li><a href="#">About BV</a></li>
+                    <li><a href="#">Placement Guidelines</a></li>
+                    <li><a href="#">Opportunities for Alumni</a></li>
+                    <li><a href="#">Photo Gallery</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+    
+
+           
+            <!-- Social Links -->
+            <div class="footer-social">
+                <h3>FOLLOW US</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© Copyright 2022 AKCDS | Visitor Counter: <span id="visitor-counter">0016513</span></p>
+        </div>
+    </section>
+</body>
+</html>
+
+
+<script>
+    window.onload = function () {
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    };
+  
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            window.location.href = "/signin/";  // ✅ Redirect to login page if user presses back button
+        }
+    });
+  </script>

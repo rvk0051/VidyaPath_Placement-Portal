@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Manager</title>
+</head>
+<body>
+    <h2>PDF Manager</h2>
+
+    <!-- Upload Form -->
+    <h3>Upload a PDF</h3>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+
+    <!-- PDF List -->
+    <h3>PDF List</h3>
+    <ul>
+        {% for pdf in page_obj %}
+            <li>
+                {{ pdf.title }} - 
+                <a href="{{ pdf.file.url }}" target="_blank">Preview</a> | 
+                <a href="{% url 'download_pdf' pdf.id %}">Download</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Pagination -->
+    <div>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Notice</title>
+</head>
+<body>
+    <h2>Update Notice</h2>
+    <form action="{% url 'update_notice1' mem.id %}" method="POST">
+        {% csrf_token %}
+        <textarea name="description" rows="4" cols="50" required>{{ mem.description }}</textarea><br>
+        <button type="submit">Update</button>
+    </form>
+    <a href="{% url 'notice' %}">Back to Notices</a>
+</body>
+</html>
