@@ -97,9 +97,9 @@ WSGI_APPLICATION = 'vidyapath.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'vidyapath1',
+        'NAME': 'user',
         'USER': 'root',
-        'PASSWORD': 'Proxima100',
+        'PASSWORD': 'admin1234',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }

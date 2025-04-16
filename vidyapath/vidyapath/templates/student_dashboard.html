@@ -6,8 +6,488 @@
     <meta charset="UTF-8">
     <title>Student Dashboard</title>
     <link rel="stylesheet" href="{% static 'style_dashboard.css' %}">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ece9e6, #ffffff);
+          }
+          .dashboard-container {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+          .info-card {
+            background: white;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            width: 50%;
+          }
+          .profile-dropdown {
+            position: relative;
+            display: inline-block;
+          }
+          .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: white;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+          }
+          .profile-dropdown.active .dropdown-menu {
+            display: block;
+          }
+          .dropdown-menu a {
+            color: #007bff;
+            font-weight: bold;
+          }
+          .dropdown-menu a:hover {
+            color: #0056b3;
+          }
+      
+      
+      
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5, #e1e6ed);
+            margin: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+      
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+      
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+      
+        .logo img {
+            height: 40px;
+        }
+      
+        .navbar {
+            display: flex;
+            align-items: center;
+        }
+      
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+      
+        .nav-links li {
+            margin-left: 20px;
+            position: relative;
+        }
+      
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            padding: 8px 12px;
+            display: block;
+        }
+      
+        .nav-links a:hover {
+            color: #007bff;
+        }
+      
+        /* Dropdown Styles */
+        .dropdown-parent {
+            position: static;
+        }
+      
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            border-radius: 5px;
+            padding: 10px 0;
+            display: none;
+            z-index: 10;
+            min-width: 150px;
+        }
+      
+        .dropdown-parent:hover .dropdown {
+            display: block;
+        }
+      
+        .dropdown li {
+            margin: 0;
+        }
+      
+        .dropdown a {
+            padding: 10px 15px;
+            color: #555;
+            display: block;
+            white-space: nowrap;
+        }
+      
+        .dropdown a:hover {
+            background-color: #f8f9fa;
+            color: #007bff;
+        }
+      
+        /* Profile Dropdown */
+        .profile-dropdown {
+            margin-left: 20px;
+        }
+      
+        .profile-btn {
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: #555;
+            transition: color 0.3s ease;
+        }
+      
+        .profile-btn i {
+            margin-right: 5px;
+        }
+      
+        .profile-btn:hover {
+            color: #007bff;
+        }
+      
+        .profile-dropdown .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: #fff;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            border-radius: 5px;
+            padding: 10px 0;
+            display: none;
+            z-index: 11;
+            min-width: 120px;
+        }
+      
+        .profile-dropdown.active .dropdown-menu {
+            display: block;
+        }
+      
+        .profile-dropdown .dropdown-menu a {
+            padding: 10px 15px;
+            color: #555;
+            display: block;
+            text-align: left;
+            white-space: nowrap;
+        }
+      
+        .profile-dropdown .dropdown-menu a:hover {
+            background-color: #f8f9fa;
+            color: #007bff;
+        }
+      
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            color: #555;
+            cursor: pointer;
+        }
+      
+        /* Dashboard Content */
+        .dashboard-container {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+      
+        .content-wrapper {
+            width: 95%;
+            max-width: 1200px;
+        }
+      
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+      
+        .welcome-section h1 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+      
+        .info-card, .additional-resumes {
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+      
+        .info-card h2, .additional-resumes h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+      
+        /* Table Styles (FORCE FULL WIDTH) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+            table-layout: fixed; /* Ensures tables take full width */
+        }
+      
+        th, td {
+            border: none;
+            padding: 12px 15px;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+      
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #555;
+        }
+      
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+      
+        tbody tr:hover {
+            background-color: #eee;
+        }
+      
+        /* Additional Resumes Table */
+        .additional-resume-list {
+            overflow-x: auto;
+        }
+      
+        .additional-resume-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+      
+        .additional-resume-table th, .additional-resume-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+      
+        .additional-resume-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #555;
+        }
+      
+        .additional-resume-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+      
+        .additional-resume-table tbody tr:hover {
+            background-color: #eee;
+        }
+      
+        .additional-resume-table td a {
+            color: #007bff;
+            text-decoration: none;
+        }
+      
+        .additional-resume-table td a:hover {
+            text-decoration: underline;
+        }
+      
+        /* Upload Form */
+        .upload-form {
+            margin-top: 15px;
+        }
+      
+        .upload-form p {
+            margin-bottom: 10px;
+        }
+      
+        .upload-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+      
+        .upload-form input[type="file"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+      
+        .upload-form button[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+      
+        .upload-form button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+      
+        .upload-form ul.errorlist {
+            color: #dc3545;
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+      
+        .upload-form .error-messages {
+            color: #dc3545;
+            margin-top: 10px;
+        }
+      
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none;
+            }
+      
+            .menu-toggle {
+                display: block;
+            }
+      
+            .navbar.responsive .nav-links {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background-color: #fff;
+                width: 100%;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+                padding: 10px 20px;
+                align-items: flex-start;
+            }
+      
+            .navbar.responsive .nav-links li {
+                margin: 0;
+                padding: 10px 0;
+                border-bottom: 1px solid #eee;
+                width: 100%;
+            }
+      
+            .navbar.responsive .nav-links li:last-child {
+                border-bottom: none;
+            }
+      
+            .profile-dropdown {
+                margin-left: 0;
+                order: 1;
+            }
+        }
+      
+        @media (max-width: 768px) {
+            .info-card, .additional-resumes {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+      
+            /* Responsive tables */
+            table thead {
+                display: none;
+            }
+      
+            table tr {
+                margin-bottom: 15px;
+                display: block;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+      
+            table td {
+                display: block;
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+                border: none;
+            }
+      
+            table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                text-align: left;
+                padding-right: 10px;
+                font-weight: bold;
+                color: #555;
+            }
+      
+            .additional-resume-table thead {
+                display: table-header-group;
+            }
+            .additional-resume-table tr {
+                display: table-row;
+                border: none;
+            }
+            .additional-resume-table td {
+                display: table-cell;
+                text-align: left;
+                padding-left: inherit;
+                position: static;
+                border: 1px solid #ddd;
+            }
+            .additional-resume-table td:before {
+                content: none;
+            }
+        }
+      
+        @media (max-width: 576px) {
+            .dashboard-container {
+                padding: 20px 15px;
+            }
+      
+            .welcome-section h1 {
+                font-size: 2em;
+            }
+      
+            .info-card h2, .additional-resumes h3 {
+                font-size: 1.5em;
+            }
+        }
         body {
             background: #e3f2fd;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -118,9 +598,61 @@
         .upload-btn:hover {
             background: #08306b;
         }
+
+
+
+
+
     </style>
 </head>
 
+
+<header class="header">
+    <div class="container">
+      <div class="logo">
+        <img src="https://i.ibb.co/vh6n771/logo.png" alt="College Logo">
+      </div>
+      <nav class="navbar">
+        <ul class="nav-links">
+          <li><a href="{% url 'student_dashboard' %}">Home</a></li>
+          <li><a href="{% url 'aboutus' %}">About Us</a></li>
+          <li class="dropdown-parent">
+            <a href="#top-placements">Top Placements</a>
+            <ul class="dropdown">
+              <li><a href="{% url 'placement' %}">Placement Data</a></li>
+              <li><a href="{% url 'placement_stats' %}">Placement Statistics</a></li>
+            </ul>
+          </li>
+          <li class="dropdown-parent">
+            <a href="#companies">Companies</a>
+            <ul class="dropdown">
+              <li><a href="partner.html">Our Partners</a></li>
+              <li><a href="{% url 'learningdev' %}">Learning and Development</a></li>
+              <li><a href="{% url 'placementg' %}">Placement Guidelines</a></li>
+            </ul>
+          </li>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+          <li class="profile-dropdown">
+            {% if request.user.is_authenticated %}
+              <button class="profile-btn" onclick="toggleDropdown()">
+                <i class="fas fa-user-circle"></i>
+                <span>{{ request.user.username }}</span>
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <ul class="dropdown-menu" id="profileDropdown">
+                <li><a href="{% url 'student_dashboard' %}">👤 Profile</a></li>
+                <li><a href="{% url 'signout' %}">🚪 Logout</a></li>
+              </ul>
+            {% endif %}
+          </li>
+          
+        </ul>
+        <div class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </div>
+  </header>
 <body>
     <div class="dashboard">
         <!-- Logout Button -->
@@ -172,7 +704,26 @@
                 flash.style.display = 'none';
             }
         }, 2000);
+
+        document.querySelector('.profile-btn').addEventListener('click', function (e) {
+            e.preventDefault();
+            this.parentElement.classList.toggle('active');
+          });
     </script>
 </body>
 
 </html>
+
+<script>
+    window.onload = function () {
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    };
+  
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            window.location.href = "/signin/";  // ✅ Redirect to login page if user presses back button
+        }
+    });
+  </script>
